@@ -164,9 +164,7 @@ st.markdown("""
   <div class="school-badge">✨ Teacher’s Digital Assistant</div>
   <div class="school-title">Smart Teaching Module (AI-Powered)</div>
   <div class="school-subtitle">
-    Asisten digital guru untuk menyusun Modul Ajar
-    Kurikulum Merdeka dengan cara yang lebih mudah,
-    cepat, dan praktis.
+    Asisten digital guru untuk penyusunan Modul Ajar
   </div>
   <div class="school-footer">
     From Teachers, For Teachers
