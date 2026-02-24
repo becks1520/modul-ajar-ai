@@ -6,48 +6,131 @@ import markdown
 from htmldocx import HtmlToDocx
 
 # =====================================
-# 1. KONFIGURASI HALAMAN (TEMA PRO)
+# 1. KONFIGURASI HALAMAN
 # =====================================
-st.set_page_config(page_title="APLIKASI MODUL AJAR AI", page_icon="🎓", layout="centered")
+st.set_page_config(
+    page_title="Modul Ajar Berbasis AI",
+    page_icon="🎓",
+    layout="centered"
+)
 
 # =====================================
-# 2. STYLE PRO & BACKGROUND
+# 2. STYLE GLOBAL (RESPONSIVE + MOBILE)
 # =====================================
 st.markdown("""
 <style>
+
+/* BACKGROUND */
 .stApp {
-    background-image: linear-gradient(to right top, #051937, #004d7a, #008793, #00bf72, #a8eb12);
+    background-image: linear-gradient(
+        to right top,
+        #051937, #004d7a, #008793, #00bf72, #a8eb12
+    );
 }
-.block-container{
-    background: rgba(255, 255, 255, 0.95);
-    padding: 30px;
+
+/* CONTAINER */
+.block-container {
+    background: rgba(255,255,255,0.96);
+    padding: 26px;
     border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    max-width: 1100px;
 }
-h1 { color: #004d7a; font-weight: bold; }
-.stButton>button {
+
+/* HEADER */
+h1 {
+    text-align: center;
+    font-size: 2.1rem;
+    font-weight: 700;
+    color: #004d7a;
+    margin-bottom: 0.3rem;
+}
+
+.header-subtitle {
+    text-align: center;
+    font-size: 1rem;
+    color: #333;
+}
+
+.header-caption {
+    text-align: center;
+    font-size: 0.85rem;
+    color: #666;
+}
+
+/* FORM CARD */
+.form-card {
+    background: #ffffff;
+    padding: 20px 22px;
+    border-radius: 16px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    margin-bottom: 20px;
+}
+
+/* LABEL */
+label {
+    font-weight: 600;
+    color: #004d7a;
+    font-size: 0.9rem;
+}
+
+/* INPUT */
+input, textarea, select {
+    border-radius: 10px !important;
+    padding: 10px 12px !important;
+    border: 1px solid #d0d7de !important;
+    font-size: 0.95rem !important;
+}
+
+/* FOCUS */
+input:focus, textarea:focus, select:focus {
+    border-color: #008793 !important;
+    box-shadow: 0 0 0 2px rgba(0,135,147,0.15) !important;
+}
+
+/* BUTTON */
+.stButton > button {
     background-color: #004d7a;
     color: white;
     font-weight: bold;
-    border-radius: 10px;
-    height: 60px;
+    border-radius: 12px;
+    height: 55px;
+    font-size: 1rem;
 }
+
+/* MOBILE */
+@media (max-width: 768px) {
+    .block-container {
+        padding: 16px;
+        border-radius: 14px;
+    }
+    h1 {
+        font-size: 1.6rem;
+    }
+    .header-subtitle {
+        font-size: 0.95rem;
+    }
+    .header-caption {
+        font-size: 0.75rem;
+    }
+    .form-card {
+        padding: 14px;
+    }
+}
+
 </style>
 """, unsafe_allow_html=True)
 
 # =====================================
-# 3. FUNGSI WORD (FORMAT TABEL RAPI)
+# 3. FUNGSI EXPORT WORD
 # =====================================
 def create_docx(hasil_ai, data):
     doc = Document()
-    # Header Dokumen
-    header = doc.add_heading(f"MODUL AJAR AI: {data['mapel']}", 0)
-    header.alignment = 1 # Center
+    header = doc.add_heading(f"MODUL AJAR PRO: {data['mapel']}", 0)
+    header.alignment = 1
 
-    # Tabel Identitas
     table = doc.add_table(rows=4, cols=2)
     table.style = 'Table Grid'
-    
     table.rows[0].cells[0].text = "Nama Sekolah"
     table.rows[0].cells[1].text = data["sekolah"]
     table.rows[1].cells[0].text = "Mata Pelajaran"
@@ -57,158 +140,144 @@ def create_docx(hasil_ai, data):
     table.rows[3].cells[0].text = "Materi Pokok"
     table.rows[3].cells[1].text = data["materi"]
 
-    doc.add_paragraph('\n')
-    
-    # Membersihkan Markdown
+    doc.add_paragraph("\n")
+
     clean_text = hasil_ai.replace("```markdown", "").replace("```", "")
-    
-    # Convert ke Word
-    html_text = markdown.markdown(clean_text, extensions=['tables'])
-    new_parser = HtmlToDocx()
-    new_parser.add_html_to_document(html_text, doc)
+    html_text = markdown.markdown(clean_text, extensions=["tables"])
+    HtmlToDocx().add_html_to_document(html_text, doc)
 
     bio = BytesIO()
     doc.save(bio)
     return bio
 
 # =====================================
-# 4. TAMPILAN UTAMA (FORM LENGKAP)
+# 4. HEADER APLIKASI
 # =====================================
-st.title("🎓 APLIKASI MODUL AJAR AI")
-st.markdown("“Transformasi Modul Ajar Berbasis Kecerdasan Buatan”")
-st.caption("Fitur: ATP + Blueprint Soal + PG Kompleks + Diferensiasi + Rubrik")
+st.markdown("<h1>🎓 Teaching Module Generator</h1>", unsafe_allow_html=True)
+st.markdown("<div class='header-subtitle'>Modul Ajar Kurikulum Merdeka Berbasis AI</div>", unsafe_allow_html=True)
+st.markdown("<div class='header-caption'>ATP • Blueprint Soal • PG Kompleks • Diferensiasi • Rubrik Penilaian</div>", unsafe_allow_html=True)
 st.divider()
 
-# --- INPUT API KEY ---
+# =====================================
+# 5. SIDEBAR
+# =====================================
 with st.sidebar:
     st.header("🔐 Kunci Akses")
-    api_key_input = st.text_input("Tempel API Key Gemini:", type="password")
-    st.info("Mode: Auto-Detect (Kompatibel Semua Laptop)")
+    api_key_input = st.text_input("Tempel API Key Gemini", type="password")
+    st.info("Mode AI: Auto-Detect")
 
-# --- INPUT DATA SEKOLAH ---
+# =====================================
+# 6. FORM INPUT
+# =====================================
+st.markdown("<div class='form-card'>", unsafe_allow_html=True)
+st.subheader("🏫 Identitas Pembelajaran")
 col1, col2 = st.columns(2)
 with col1:
-    sekolah = st.text_input("Nama Sekolah", placeholder="SMK Bisa Hebat")
-    kelas = st.text_input("Kelas / Fase", placeholder="XI / Fase F")
+    sekolah = st.text_input("Nama Sekolah", "SMK Bisa Hebat")
+    kelas = st.text_input("Kelas / Fase", "XI / Fase F")
 with col2:
-    mapel = st.text_input("Mata Pelajaran", placeholder="Produktif TKJ / Matematika")
-    materi = st.text_input("Materi Pokok", placeholder="Fiber Optik / Peluang")
+    mapel = st.text_input("Mata Pelajaran", "Produktif / Matematika")
+    materi = st.text_input("Materi Pokok", "Materi Inti")
+st.markdown("</div>", unsafe_allow_html=True)
 
+st.markdown("<div class='form-card'>", unsafe_allow_html=True)
+st.subheader("🧠 Pengaturan Pembelajaran")
 col3, col4 = st.columns(2)
 with col3:
-    model_belajar = st.selectbox("Model Pembelajaran", 
-                                ["Project Based Learning (PjBL)", 
-                                 "Problem Based Learning (PBL)", 
-                                 "Discovery Learning",
-                                 "Teaching Factory (TeFa)"])
+    model_belajar = st.selectbox("Model Pembelajaran", [
+        "Project Based Learning (PjBL)",
+        "Problem Based Learning (PBL)",
+        "Discovery Learning",
+        "Teaching Factory (TeFa)"
+    ])
 with col4:
-    mode_soal = st.selectbox("Jenis Soal", ["HOTS - Analisis Kasus", "HOTS - Perhitungan", "Studi Kasus Industri"])
+    mode_soal = st.selectbox("Jenis Soal", [
+        "HOTS - Analisis Kasus",
+        "HOTS - Perhitungan",
+        "Studi Kasus Industri"
+    ])
+st.markdown("</div>", unsafe_allow_html=True)
 
-murid = st.text_area("Kondisi & Karakteristik Murid (Untuk Diferensiasi)", 
-                     placeholder="Contoh: 20% mahir praktik, 50% rata-rata, 30% butuh bimbingan konsep dasar.",
-                     height=100)
+st.markdown("<div class='form-card'>", unsafe_allow_html=True)
+st.subheader("👥 Karakteristik Peserta Didik")
+murid = st.text_area(
+    "Kondisi & Karakteristik Murid",
+    placeholder="- 20% mahir\n- 50% sedang\n- 30% perlu bimbingan"
+)
+st.markdown("</div>", unsafe_allow_html=True)
 
 # =====================================
-# 5. LOGIKA GENERATE (PRO PROMPT + AUTO DETECT)
+# 7. GENERATE
 # =====================================
-if st.button("✨ GENERATE MODUL SUPER LENGKAP", type="primary", use_container_width=True):
-    
-    if not api_key_input:
-        st.error("⚠️ API Key wajib diisi di menu samping!")
+if st.button("✨ GENERATE MODUL SUPER LENGKAP", use_container_width=True):
+
+    if not api_key_input or not sekolah or not mapel:
+        st.warning("⚠️ API Key, Sekolah, dan Mapel wajib diisi.")
         st.stop()
 
-    if not sekolah or not mapel:
-        st.warning("⚠️ Data Sekolah dan Mapel wajib diisi.")
-        st.stop()
+    # Konfigurasi API
+    genai.configure(api_key=api_key_input)
+
+    # ===============================
+    # AUTO DETECT MODEL GEMINI (ANTI 404)
+    # ===============================
+    found_model = None
 
     try:
-        # 1. Konfigurasi Key
-        genai.configure(api_key=api_key_input)
-        
-        # 2. AUTO-DETECT MODEL (Supaya tidak error 404)
-        found_model = "models/gemini-pro" # Default aman
-        try:
-            for m in genai.list_models():
-                if 'generateContent' in m.supported_generation_methods:
-                    if 'gemini' in m.name:
-                        found_model = m.name
-                        break
-        except:
-            pass
-
-        st.toast(f"✅ Mesin AI Siap: {found_model}")
-        model = genai.GenerativeModel(found_model)
-        
-        # 3. PROMPT SUPER PRO (Sesuai permintaan Anda)
-        prompt = f"""
-        Berperanlah sebagai Konsultan Kurikulum SMK & Guru Ahli.
-        
-        TUGAS:
-        Buatkan MODUL AJAR LENGKAP & PERANGKAT PEMBELAJARAN untuk:
-        - Sekolah: {sekolah}
-        - Kelas: {kelas}
-        - Mapel: {mapel}
-        - Materi: {materi}
-        - Model: {model_belajar}
-        - Kondisi Murid: {murid}
-        
-        WAJIB HASILKAN OUTPUT DALAM FORMAT TABEL MARKDOWN YANG RAPI:
-        
-        BAGIAN 1: INFORMASI UMUM
-        - Identitas Modul
-        - Profil Pelajar Pancasila (Pilih yang relevan)
-        - Sarana & Prasarana
-        - Target Peserta Didik (Berdasarkan kondisi: {murid})
-        
-        BAGIAN 2: KOMPONEN INTI
-        - Tujuan Pembelajaran (ABCD) & Kriteria Ketercapaian (KKTP)
-        - Pemahaman Bermakna & Pertanyaan Pemantik
-        
-        BAGIAN 3: LANGKAH PEMBELAJARAN ({model_belajar})
-        - Pendahuluan
-        - Kegiatan Inti (Sintaks {model_belajar} harus terlihat jelas)
-        - Penutup
-        
-        BAGIAN 4: DIFERENSIASI PEMBELAJARAN
-        - Strategi untuk Murid Paham Cepat (Pengayaan/Tutor Sebaya)
-        - Strategi untuk Murid Butuh Bimbingan (Pendampingan Khusus)
-        
-        BAGIAN 5: ASESMEN & EVALUASI (SUPER LENGKAP)
-        - Kisi-kisi / Blueprint Soal Singkat
-        - 3 Soal Pilihan Ganda Kompleks (HOTS)
-        - 3 Soal Essay Analisis Kasus ({mode_soal})
-        - Kunci Jawaban & Pedoman Penskoran
-        - Lembar Observasi Sikap & Rubrik Penilaian
-        
-        Pastikan bahasa yang digunakan profesional, operasional, dan aplikatif untuk SMK.
-        """
-
-        with st.spinner("🤖 Sedang meracik Modul Pro (ATP, Soal HOTS, Rubrik)... Mohon tunggu..."):
-            response = model.generate_content(prompt)
-            hasil = response.text
-            
-            st.success("✅ BERHASIL! Modul Super Pro telah jadi.")
-            
-            # Tampilkan Preview
-            with st.expander("📄 Lihat Preview Dokumen", expanded=True):
-                st.markdown(hasil)
-            
-            # Siapkan Word
-            doc_file = create_docx(hasil, {
-                "sekolah": sekolah, 
-                "mapel": mapel, 
-                "kelas": kelas, 
-                "materi": materi
-            })
-            
-            st.download_button(
-                label="📥 DOWNLOAD DOKUMEN WORD (.DOCX)",
-                data=doc_file.getvalue(),
-                file_name=f"Modul_Pro_{mapel}_{materi}.docx",
-                mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                use_container_width=True
-            )
-
+        for m in genai.list_models():
+            if "generateContent" in m.supported_generation_methods:
+                if "gemini" in m.name.lower():
+                    found_model = m.name
+                    break
     except Exception as e:
-        st.error(f"Terjadi Kendala: {e}")
-        st.warning("Tips: Coba refresh halaman atau cek API Key Anda.")
+        st.error(f"Gagal mendeteksi model AI: {e}")
+        st.stop()
+
+    if not found_model:
+        st.error("❌ Tidak ada model Gemini yang mendukung generateContent.")
+        st.stop()
+
+    st.toast(f"🤖 Model AI digunakan: {found_model}")
+
+    model = genai.GenerativeModel(found_model)
+
+    prompt = f"""
+    Berperan sebagai Konsultan Kurikulum.
+    Buatkan Modul Ajar Lengkap Kurikulum Merdeka untuk:
+    Sekolah: {sekolah}
+    Kelas: {kelas}
+    Mapel: {mapel}
+    Materi: {materi}
+    Model: {model_belajar}
+    Kondisi Murid: {murid}
+    
+    ATURAN FORMATTING (SANGAT PENTING):
+    Gunakan format Markdown standar yang rapi (Heading 1, 2, 3, dan Bullet points/Numbering). 
+    JANGAN masukkan semua teks ke dalam satu tabel besar. 
+    Gunakan tabel HANYA untuk "Kisi-kisi Soal" dan "Rubrik Penilaian" saja.
+    JANGAN gunakan format matematika LaTeX (seperti tanda $ atau $$). Tuliskan semua rumus matematika menggunakan teks biasa yang langsung terbaca di Microsoft Word (contoh: x^2 + 5x + 6 = 0).
+    
+    Sertakan ATP, Soal HOTS, Diferensiasi, dan Rubrik Penilaian.
+    """
+
+    with st.spinner("🤖 Menyusun Modul..."):
+        hasil = model.generate_content(prompt).text
+        st.success("✅ Modul berhasil dibuat!")
+
+        with st.expander("📄 Preview Modul", expanded=True):
+            st.markdown(hasil)
+
+        docx = create_docx(hasil, {
+            "sekolah": sekolah,
+            "mapel": mapel,
+            "kelas": kelas,
+            "materi": materi
+        })
+
+        st.download_button(
+            "📥 Download Word (.DOCX)",
+            docx.getvalue(),
+            file_name=f"Modul_{mapel}.docx",
+            mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            use_container_width=True
+        )
