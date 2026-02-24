@@ -162,7 +162,7 @@ st.markdown("""
 
 <div class="school-header">
   <div class="school-badge">✨ Teacher’s Digital Assistant</div>
-  <div class="school-title">Modul Ajar AI – SMK Sejahtera</div>
+  <div class="school-title">Smart Teaching Module (AI-Powered)</div>
   <div class="school-subtitle">
     Asisten digital guru untuk menyusun Modul Ajar
     Kurikulum Merdeka dengan cara yang lebih mudah,
