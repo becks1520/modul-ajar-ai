@@ -19,16 +19,9 @@ st.set_page_config(
 # =====================================
 st.markdown("""
 <style>
-
-/* BACKGROUND */
 .stApp {
-    background-image: linear-gradient(
-        to right top,
-        #051937, #004d7a, #008793, #00bf72, #a8eb12
-    );
+    background-image: linear-gradient(to right top, #051937, #004d7a, #008793, #00bf72, #a8eb12);
 }
-
-/* CONTAINER */
 .block-container {
     background: rgba(255,255,255,0.96);
     padding: 26px;
@@ -36,8 +29,6 @@ st.markdown("""
     box-shadow: 0 10px 30px rgba(0,0,0,0.25);
     max-width: 1100px;
 }
-
-/* HEADER */
 h1 {
     text-align: center;
     font-size: 2.1rem;
@@ -45,20 +36,6 @@ h1 {
     color: #004d7a;
     margin-bottom: 0.3rem;
 }
-
-.header-subtitle {
-    text-align: center;
-    font-size: 1rem;
-    color: #333;
-}
-
-.header-caption {
-    text-align: center;
-    font-size: 0.85rem;
-    color: #666;
-}
-
-/* FORM CARD */
 .form-card {
     background: #ffffff;
     padding: 20px 22px;
@@ -66,29 +43,21 @@ h1 {
     box-shadow: 0 6px 16px rgba(0,0,0,0.12);
     margin-bottom: 20px;
 }
-
-/* LABEL */
 label {
     font-weight: 600;
     color: #004d7a;
     font-size: 0.9rem;
 }
-
-/* INPUT */
 input, textarea, select {
     border-radius: 10px !important;
     padding: 10px 12px !important;
     border: 1px solid #d0d7de !important;
     font-size: 0.95rem !important;
 }
-
-/* FOCUS */
 input:focus, textarea:focus, select:focus {
     border-color: #008793 !important;
     box-shadow: 0 0 0 2px rgba(0,135,147,0.15) !important;
 }
-
-/* BUTTON */
 .stButton > button {
     background-color: #004d7a;
     color: white;
@@ -97,27 +66,11 @@ input:focus, textarea:focus, select:focus {
     height: 55px;
     font-size: 1rem;
 }
-
-/* MOBILE */
 @media (max-width: 768px) {
-    .block-container {
-        padding: 16px;
-        border-radius: 14px;
-    }
-    h1 {
-        font-size: 1.6rem;
-    }
-    .header-subtitle {
-        font-size: 0.95rem;
-    }
-    .header-caption {
-        font-size: 0.75rem;
-    }
-    .form-card {
-        padding: 14px;
-    }
+    .block-container { padding: 16px; border-radius: 14px; }
+    h1 { font-size: 1.6rem; }
+    .form-card { padding: 14px; }
 }
-
 </style>
 """, unsafe_allow_html=True)
 
@@ -151,11 +104,75 @@ def create_docx(hasil_ai, data):
     return bio
 
 # =====================================
-# 4. HEADER APLIKASI
+# 4. HEADER APLIKASI (BRANDING SEKOLAH)
 # =====================================
-st.markdown("<h1>🎓 Teaching Module Generator</h1>", unsafe_allow_html=True)
-st.markdown("<div class='header-subtitle'>Modul Ajar Kurikulum Merdeka Berbasis AI</div>", unsafe_allow_html=True)
-st.markdown("<div class='header-caption'>ATP • Blueprint Soal • PG Kompleks • Diferensiasi • Rubrik Penilaian</div>", unsafe_allow_html=True)
+# PENTING: Jangan ada spasi sebelum tag <div> di bawah ini agar terbaca sebagai desain.
+st.markdown("""
+<style>
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.school-header {
+    text-align: center;
+    padding: 3.5rem 1rem 4rem;
+    border-radius: 20px;
+    background: linear-gradient(135deg, rgba(2,132,199,0.12), rgba(16,185,129,0.12));
+    backdrop-filter: blur(12px);
+    animation: fadeUp 0.9s ease-out;
+    margin-bottom: 1.5rem;
+}
+.school-badge {
+    display: inline-block;
+    margin-bottom: 1.2rem;
+    padding: 0.35rem 1rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: #0F172A;
+    background: rgba(2,132,199,0.22);
+    border-radius: 999px;
+}
+.school-title {
+    font-size: 2.8rem;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    margin-bottom: 0.6rem;
+    background: linear-gradient(90deg, #004d7a, #00bf72);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.school-subtitle {
+    max-width: 820px;
+    margin: 0 auto;
+    font-size: 1.15rem;
+    color: #334155;
+    line-height: 1.7;
+}
+.school-footer {
+    margin-top: 1.2rem;
+    font-size: 0.85rem;
+    color: #475569;
+}
+@media (max-width: 768px) {
+    .school-title { font-size: 2rem; }
+    .school-subtitle { font-size: 1rem; }
+}
+</style>
+
+<div class="school-header">
+  <div class="school-badge">✨ Teacher’s Digital Assistant</div>
+  <div class="school-title">Modul Ajar AI – SMK Sejahtera</div>
+  <div class="school-subtitle">
+    Asisten digital guru untuk menyusun Modul Ajar
+    Kurikulum Merdeka dengan cara yang lebih mudah,
+    cepat, dan praktis.
+  </div>
+  <div class="school-footer">
+    From Teachers, For Teachers
+  </div>
+""", unsafe_allow_html=True)
+
 st.divider()
 
 # =====================================
@@ -173,7 +190,7 @@ st.markdown("<div class='form-card'>", unsafe_allow_html=True)
 st.subheader("🏫 Identitas Pembelajaran")
 col1, col2 = st.columns(2)
 with col1:
-    sekolah = st.text_input("Nama Sekolah", "SMK Bisa Hebat")
+    sekolah = st.text_input("Nama Sekolah", "SMK Sejahtera")
     kelas = st.text_input("Kelas / Fase", "XI / Fase F")
 with col2:
     mapel = st.text_input("Mata Pelajaran", "Produktif / Matematika")
@@ -215,14 +232,9 @@ if st.button("✨ GENERATE MODUL SUPER LENGKAP", use_container_width=True):
         st.warning("⚠️ API Key, Sekolah, dan Mapel wajib diisi.")
         st.stop()
 
-    # Konfigurasi API
     genai.configure(api_key=api_key_input)
 
-    # ===============================
-    # AUTO DETECT MODEL GEMINI (ANTI 404)
-    # ===============================
     found_model = None
-
     try:
         for m in genai.list_models():
             if "generateContent" in m.supported_generation_methods:
@@ -238,7 +250,6 @@ if st.button("✨ GENERATE MODUL SUPER LENGKAP", use_container_width=True):
         st.stop()
 
     st.toast(f"🤖 Model AI digunakan: {found_model}")
-
     model = genai.GenerativeModel(found_model)
 
     prompt = f"""
