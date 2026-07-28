@@ -1,5 +1,5 @@
 import streamlit as st
-import google.generativeai as genai
+from openai import OpenAI
 from docx import Document
 from io import BytesIO
 import markdown
@@ -178,8 +178,13 @@ st.divider()
 # =====================================
 with st.sidebar:
     st.header("🔐 Kunci Akses")
-    api_key_input = st.text_input("Tempel API Key Gemini", type="password")
-    st.info("Mode AI: Auto-Detect")
+    api_key_input = st.text_input("Tempel API Key OpenAI", type="password")
+    model_pilihan = st.selectbox(
+        "Model OpenAI",
+        ["gpt-4o", "gpt-4o-mini", "gpt-4.1", "gpt-4.1-mini", "o4-mini"],
+        index=0
+    )
+    st.info("Mode AI: OpenAI (ChatGPT)")
 
 # =====================================
 # 6. FORM INPUT
@@ -230,25 +235,13 @@ if st.button("✨ GENERATE MODUL SUPER LENGKAP", use_container_width=True):
         st.warning("⚠️ API Key, Sekolah, dan Mapel wajib diisi.")
         st.stop()
 
-    genai.configure(api_key=api_key_input)
-
-    found_model = None
     try:
-        for m in genai.list_models():
-            if "generateContent" in m.supported_generation_methods:
-                if "gemini" in m.name.lower():
-                    found_model = m.name
-                    break
+        client = OpenAI(api_key=api_key_input)
     except Exception as e:
-        st.error(f"Gagal mendeteksi model AI: {e}")
+        st.error(f"Gagal menghubungkan ke OpenAI: {e}")
         st.stop()
 
-    if not found_model:
-        st.error("❌ Tidak ada model Gemini yang mendukung generateContent.")
-        st.stop()
-
-    st.toast(f"🤖 Model AI digunakan: {found_model}")
-    model = genai.GenerativeModel(found_model)
+    st.toast(f"🤖 Model AI digunakan: {model_pilihan}")
 
     prompt = f"""
     Berperan sebagai Konsultan Kurikulum.
@@ -270,7 +263,16 @@ if st.button("✨ GENERATE MODUL SUPER LENGKAP", use_container_width=True):
     """
 
     with st.spinner("🤖 Menyusun Modul..."):
-        hasil = model.generate_content(prompt).text
+        try:
+            response = client.chat.completions.create(
+                model=model_pilihan,
+                messages=[{"role": "user", "content": prompt}]
+            )
+            hasil = response.choices[0].message.content
+        except Exception as e:
+            st.error(f"Gagal membuat modul: {e}")
+            st.stop()
+
         st.success("✅ Modul berhasil dibuat!")
 
         with st.expander("📄 Preview Modul", expanded=True):
